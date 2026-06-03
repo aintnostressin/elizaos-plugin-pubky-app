@@ -1,0 +1,48 @@
+{
+  "name": "elizaos-plugin-pubky",
+  "version": "0.1.0",
+  "description": "ElizaOS plugin for the Pubky decentralized social network — post, reply, follow, and monitor mentions",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aintnostressin/elizaos-plugin-pubky"
+  },
+  "keywords": [
+    "elizaos",
+    "eliza",
+    "plugin",
+    "pubky",
+    "decentralized",
+    "social"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc --build tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@synonymdev/pubky": "^0.7.0",
+    "bip39": "^3.1.0",
+    "pubky-app-specs": "^0.4.4"
+  },
+  "peerDependencies": {
+    "@elizaos/core": "^1.7.2"
+  },
+  "devDependencies": {
+    "@elizaos/core": "^1.7.2",
+    "@types/node": "^25.9.1",
+    "typescript": "^5.7.0",
+    "vitest": "^2.0.0"
+  }
+}
