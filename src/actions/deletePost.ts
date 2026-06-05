@@ -1,6 +1,11 @@
 import type { Action, IAgentRuntime, Memory, State, HandlerCallback } from '@elizaos/core';
 import { logger } from '@elizaos/core';
+import { ENV } from '../env.js';
 import { PubkyService } from '../services/pubkyService.js';
+
+const getDryRun = (runtime: IAgentRuntime): boolean => {
+  return (runtime.getSetting(ENV.PUBKY_DRY_RUN) ?? process.env[ENV.PUBKY_DRY_RUN]) === 'true';
+};
 
 export const deletePostAction: Action = {
   name: 'PUBKY_DELETE_POST',
@@ -26,6 +31,8 @@ export const deletePostAction: Action = {
       return { success: false, text: 'PubkyService is not available' };
     }
 
+    const dryRun = getDryRun(runtime);
+
     try {
       const text = message.content?.text || '';
 
@@ -39,7 +46,7 @@ export const deletePostAction: Action = {
       }
       const postId = idMatch[1].toUpperCase();
 
-      await service.deletePost(postId);
+      await service.deletePost(postId, dryRun);
 
       const resultText = `Deleted post ${postId} from Pubky.`;
 
