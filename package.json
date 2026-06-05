@@ -28,6 +28,7 @@
   "scripts": {
     "build": "tsc --build tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
+    "prepare": "tsc --build tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest"
   },
