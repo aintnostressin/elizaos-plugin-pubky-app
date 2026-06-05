@@ -185,14 +185,14 @@ export class PubkyService extends Service {
     return this.specsBuilder;
   }
 
-  async publishPost(content: string, isLong: boolean = false, parent?: string): Promise<string> {
+  async publishPost(content: string, isLong: boolean = false, parent?: string, dryRun: boolean = false): Promise<string> {
     const specs = await import('pubky-app-specs');
     const builder = await this.getSpecsBuilder();
     const kind = isLong ? specs.PubkyAppPostKind.Long : specs.PubkyAppPostKind.Short;
     const { post, meta } = builder.createPost(content, kind, parent ?? null, null, null);
     const path = `/pub/pubky.app/posts/${meta.id}`;
 
-    if (this.setting(ENV.PUBKY_DRY_RUN) === 'true') {
+    if (dryRun) {
       logger.info(`[PubkyService] DRY RUN — would post to ${path}: ${JSON.stringify(post.toJson())}`);
       return meta.id;
     }
@@ -202,8 +202,8 @@ export class PubkyService extends Service {
     return meta.id;
   }
 
-  async updateProfile(profile: PubkyAppUser): Promise<void> {
-    if (this.setting(ENV.PUBKY_DRY_RUN) === 'true') {
+  async updateProfile(profile: PubkyAppUser, dryRun: boolean = false): Promise<void> {
+    if (dryRun) {
       logger.info(`[PubkyService] DRY RUN — would update profile: ${JSON.stringify(profile)}`);
       return;
     }
@@ -219,8 +219,8 @@ export class PubkyService extends Service {
     await this.storage.putJson('/pub/pubky.app/profile.json', user.toJson());
   }
 
-  async followUser(userId: string): Promise<void> {
-    if (this.setting(ENV.PUBKY_DRY_RUN) === 'true') {
+  async followUser(userId: string, dryRun: boolean = false): Promise<void> {
+    if (dryRun) {
       logger.info(`[PubkyService] DRY RUN — would follow user ${userId}`);
       return;
     }
@@ -230,11 +230,11 @@ export class PubkyService extends Service {
     await this.storage.putJson(`/pub/pubky.app/follows/${userId}`, follow.toJson());
   }
 
-  async tagPost(postId: string, labels: string[]): Promise<void> {
+  async tagPost(postId: string, labels: string[], dryRun: boolean = false): Promise<void> {
     const builder = await this.getSpecsBuilder();
     const postUri = `pubky://${this.agentPubkyId}/pub/pubky.app/posts/${postId}`;
 
-    if (this.setting(ENV.PUBKY_DRY_RUN) === 'true') {
+    if (dryRun) {
       logger.info(`[PubkyService] DRY RUN — would tag ${postId} with: ${labels.join(', ')}`);
       return;
     }
@@ -252,8 +252,8 @@ export class PubkyService extends Service {
     }
   }
 
-  async deletePost(postId: string): Promise<void> {
-    if (this.setting(ENV.PUBKY_DRY_RUN) === 'true') {
+  async deletePost(postId: string, dryRun: boolean = false): Promise<void> {
+    if (dryRun) {
       logger.info(`[PubkyService] DRY RUN — would delete post ${postId}`);
       return;
     }

@@ -1,6 +1,11 @@
 import type { Action, IAgentRuntime, Memory, State, HandlerCallback } from '@elizaos/core';
 import { logger } from '@elizaos/core';
+import { ENV } from '../env.js';
 import { PubkyService } from '../services/pubkyService.js';
+
+const getDryRun = (runtime: IAgentRuntime): boolean => {
+  return (runtime.getSetting(ENV.PUBKY_DRY_RUN) ?? process.env[ENV.PUBKY_DRY_RUN]) === 'true';
+};
 
 export const followUserAction: Action = {
   name: 'PUBKY_FOLLOW_USER',
@@ -24,6 +29,8 @@ export const followUserAction: Action = {
       return { success: false, text: 'PubkyService is not available' };
     }
 
+    const dryRun = getDryRun(runtime);
+
     try {
       const text = message.content?.text || '';
 
@@ -43,7 +50,7 @@ export const followUserAction: Action = {
         return { success: false, text: 'Cannot follow yourself.' };
       }
 
-      await service.followUser(userId);
+      await service.followUser(userId, dryRun);
 
       const resultText = `Now following user ${userId.slice(0, 12)}... on Pubky`;
 

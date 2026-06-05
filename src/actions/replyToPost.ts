@@ -1,6 +1,11 @@
 import type { Action, IAgentRuntime, Memory, State, HandlerCallback } from '@elizaos/core';
 import { logger, ModelType } from '@elizaos/core';
+import { ENV } from '../env.js';
 import { PubkyService } from '../services/pubkyService.js';
+
+const getDryRun = (runtime: IAgentRuntime): boolean => {
+  return (runtime.getSetting(ENV.PUBKY_DRY_RUN) ?? process.env[ENV.PUBKY_DRY_RUN]) === 'true';
+};
 
 export const replyToPostAction: Action = {
   name: 'PUBKY_REPLY',
@@ -27,6 +32,8 @@ export const replyToPostAction: Action = {
     if (!service) {
       return { success: false, text: 'PubkyService is not available' };
     }
+
+    const dryRun = getDryRun(runtime);
 
     try {
       const text = message.content?.text || '';
@@ -63,7 +70,7 @@ Write a thoughtful, conversational reply (under 280 characters). Output ONLY the
         return { success: false, text: 'Could not generate reply' };
       }
 
-      const postId = await service.publishPost(replyContent, false, parentUri);
+      const postId = await service.publishPost(replyContent, false, parentUri, dryRun);
 
       const resultText = `Replied on Pubky: "${replyContent.slice(0, 100)}${replyContent.length > 100 ? '...' : ''}"`;
 

@@ -1,6 +1,11 @@
 import type { Action, IAgentRuntime, Memory, State, HandlerCallback } from '@elizaos/core';
 import { logger, ModelType } from '@elizaos/core';
+import { ENV } from '../env.js';
 import { PubkyService } from '../services/pubkyService.js';
+
+const getDryRun = (runtime: IAgentRuntime): boolean => {
+  return (runtime.getSetting(ENV.PUBKY_DRY_RUN) ?? process.env[ENV.PUBKY_DRY_RUN]) === 'true';
+};
 
 export const createPostAction: Action = {
   name: 'PUBKY_CREATE_POST',
@@ -27,6 +32,8 @@ export const createPostAction: Action = {
     if (!service) {
       return { success: false, text: 'PubkyService is not available' };
     }
+
+    const dryRun = getDryRun(runtime);
 
     try {
       // If the user provided specific content to post, use it
@@ -66,7 +73,7 @@ Write an engaging post (under 280 characters) about your topics (${topics}). Out
       }
 
       const isLong = postContent.length > 2000;
-      const postId = await service.publishPost(postContent, isLong);
+      const postId = await service.publishPost(postContent, isLong, undefined, dryRun);
 
       const resultText = `Published post on Pubky: "${postContent.slice(0, 100)}${postContent.length > 100 ? '...' : ''}"`;
 
