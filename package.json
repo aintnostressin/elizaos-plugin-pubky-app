@@ -1,5 +1,5 @@
 {
-  "name": "elizaos-plugin-pubky",
+  "name": "elizaos-plugin-pubky-app",
   "version": "0.1.0",
   "description": "ElizaOS plugin for the Pubky decentralized social network — post, reply, follow, and monitor mentions",
   "license": "MIT",
@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/aintnostressin/elizaos-plugin-pubky"
+    "url": "https://github.com/aintnostressin/elizaos-plugin-pubky-app"
   },
   "keywords": [
     "elizaos",
@@ -28,6 +28,7 @@
   "scripts": {
     "build": "tsc --build tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
+    "prepare": "tsc --build tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest"
   },
