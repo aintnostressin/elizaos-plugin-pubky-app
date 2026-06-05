@@ -203,6 +203,11 @@ export class PubkyService extends Service {
   }
 
   async updateProfile(profile: PubkyAppUser): Promise<void> {
+    if (this.setting(ENV.PUBKY_DRY_RUN) === 'true') {
+      logger.info(`[PubkyService] DRY RUN — would update profile: ${JSON.stringify(profile)}`);
+      return;
+    }
+
     const builder = await this.getSpecsBuilder();
     const { user } = builder.createUser(
       profile.name,
@@ -215,6 +220,11 @@ export class PubkyService extends Service {
   }
 
   async followUser(userId: string): Promise<void> {
+    if (this.setting(ENV.PUBKY_DRY_RUN) === 'true') {
+      logger.info(`[PubkyService] DRY RUN — would follow user ${userId}`);
+      return;
+    }
+
     const builder = await this.getSpecsBuilder();
     const { follow } = builder.createFollow(userId);
     await this.storage.putJson(`/pub/pubky.app/follows/${userId}`, follow.toJson());
@@ -243,6 +253,11 @@ export class PubkyService extends Service {
   }
 
   async deletePost(postId: string): Promise<void> {
+    if (this.setting(ENV.PUBKY_DRY_RUN) === 'true') {
+      logger.info(`[PubkyService] DRY RUN — would delete post ${postId}`);
+      return;
+    }
+
     const path = `/pub/pubky.app/posts/${postId}`;
     await this.storage.delete(path);
     logger.info(`[PubkyService] Post deleted: ${postId}`);
