@@ -1,6 +1,7 @@
 import type { Action, IAgentRuntime, Memory, State, HandlerCallback } from '@elizaos/core';
 import { logger } from '@elizaos/core';
 import { PubkyService } from '../services/pubkyService.js';
+import { createInteractionMemory } from '../services/memoryHelper.js';
 
 export const deletePostAction: Action = {
   name: 'PUBKY_DELETE_POST',
@@ -42,6 +43,14 @@ export const deletePostAction: Action = {
       await service.deletePost(postId);
 
       const resultText = `Deleted post ${postId} from Pubky.`;
+
+      await createInteractionMemory(
+        runtime,
+        message.roomId,
+        runtime.agentId,
+        `Deleted post ${postId} from Pubky`,
+        { action: 'delete', target: postId },
+      );
 
       if (callback) {
         await callback({ text: resultText });

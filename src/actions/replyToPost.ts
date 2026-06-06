@@ -1,6 +1,7 @@
 import type { Action, IAgentRuntime, Memory, State, HandlerCallback } from '@elizaos/core';
 import { logger, ModelType } from '@elizaos/core';
 import { PubkyService } from '../services/pubkyService.js';
+import { createInteractionMemory } from '../services/memoryHelper.js';
 
 export const replyToPostAction: Action = {
   name: 'PUBKY_REPLY',
@@ -66,6 +67,14 @@ Write a thoughtful, conversational reply (under 280 characters). Output ONLY the
       const postId = await service.publishPost(replyContent, false, parentUri);
 
       const resultText = `Replied on Pubky: "${replyContent.slice(0, 100)}${replyContent.length > 100 ? '...' : ''}"`;
+
+      await createInteractionMemory(
+        runtime,
+        message.roomId,
+        runtime.agentId,
+        `Replied to ${parentUri} on Pubky: ${replyContent.slice(0, 200)}`,
+        { action: 'reply', target: parentUri },
+      );
 
       if (callback) {
         await callback({ text: resultText });

@@ -7,6 +7,7 @@ import { followUserAction } from './actions/followUser.js';
 import { deletePostAction } from './actions/deletePost.js';
 import { feedProvider } from './providers/feedProvider.js';
 import { notificationsProvider } from './providers/notificationsProvider.js';
+import { interactionMemoryProvider } from './providers/interactionMemoryProvider.js';
 
 export const pubkyPlugin: Plugin = {
   name: 'plugin-pubky',
@@ -24,6 +25,7 @@ export const pubkyPlugin: Plugin = {
   providers: [
     feedProvider,
     notificationsProvider,
+    interactionMemoryProvider,
   ],
 };
 
@@ -31,10 +33,12 @@ export default pubkyPlugin;
 
 // Re-export components for direct usage
 export { PubkyService, checkHasPostedRecently, extractPostIds } from './services/pubkyService.js';
+export { createInteractionMemory } from './services/memoryHelper.js';
 export { createPostAction } from './actions/createPost.js';
 export { replyToPostAction } from './actions/replyToPost.js';
 export { followUserAction } from './actions/followUser.js';
 export { deletePostAction } from './actions/deletePost.js';
 export { feedProvider } from './providers/feedProvider.js';
 export { notificationsProvider } from './providers/notificationsProvider.js';
+export { interactionMemoryProvider } from './providers/interactionMemoryProvider.js';
 export * from './types.js';

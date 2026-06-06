@@ -1,6 +1,7 @@
 import type { Action, IAgentRuntime, Memory, State, HandlerCallback } from '@elizaos/core';
 import { logger, ModelType } from '@elizaos/core';
 import { PubkyService } from '../services/pubkyService.js';
+import { createInteractionMemory } from '../services/memoryHelper.js';
 
 export const createPostAction: Action = {
   name: 'PUBKY_CREATE_POST',
@@ -69,6 +70,14 @@ Write an engaging post (under 280 characters) about your topics (${topics}). Out
       const postId = await service.publishPost(postContent, isLong);
 
       const resultText = `Published post on Pubky: "${postContent.slice(0, 100)}${postContent.length > 100 ? '...' : ''}"`;
+
+      await createInteractionMemory(
+        runtime,
+        message.roomId,
+        runtime.agentId,
+        `Posted on Pubky: ${postContent.slice(0, 200)}`,
+        { action: 'post', target: postId },
+      );
 
       if (callback) {
         await callback({ text: resultText });

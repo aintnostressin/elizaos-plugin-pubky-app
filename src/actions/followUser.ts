@@ -1,6 +1,7 @@
 import type { Action, IAgentRuntime, Memory, State, HandlerCallback } from '@elizaos/core';
 import { logger } from '@elizaos/core';
 import { PubkyService } from '../services/pubkyService.js';
+import { createInteractionMemory } from '../services/memoryHelper.js';
 
 export const followUserAction: Action = {
   name: 'PUBKY_FOLLOW_USER',
@@ -46,6 +47,14 @@ export const followUserAction: Action = {
       await service.followUser(userId);
 
       const resultText = `Now following user ${userId.slice(0, 12)}... on Pubky`;
+
+      await createInteractionMemory(
+        runtime,
+        message.roomId,
+        runtime.agentId,
+        `Followed user ${userId} on Pubky`,
+        { action: 'follow', target: userId },
+      );
 
       if (callback) {
         await callback({ text: resultText });
